@@ -42,6 +42,7 @@ public:
   void clear();
 
   string getText();
+  void setText(string);
 
   void moveCursorRow(int direction, bool shift, bool cmd);
   void moveCursorCol(int direction, bool shift, bool cmd);

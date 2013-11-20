@@ -27,6 +27,9 @@ maxScale(0.9)
 string EditorBuffer::getText() {
   return text;
 }
+void EditorBuffer::setText(string t) {
+  text = t;
+}
 
 void EditorBuffer::insert(int key) {
   if (selectStart != selectEnd) {

@@ -44,6 +44,10 @@ public:
   vector<EditorBuffer*> buf;
   int currentBuffer;
   int maxBuffer;
+  
+  bool loadFile(string filename, int whichBuffer);
+  bool saveFile(string filename, int whichBuffer);
+  
 };
 
 

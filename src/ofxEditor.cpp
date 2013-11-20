@@ -233,6 +233,38 @@ void ofxEditor::windowResized(ofResizeEventArgs & resize) {
   editorFbo.end();
 }
 
+bool ofxEditor::loadFile(string filename, int whichBuffer) {
+  
+  if (whichBuffer < 0 || whichBuffer > maxBuffer) return false;
+  
+	string path = ofToDataPath(filename);
+	ofFile file;
+	if(!file.open(ofToDataPath(path), ofFile::ReadOnly)){
+		return false;
+	}
+  buf[whichBuffer]->setText(file.readToBuffer().getText());
+	file.close();
+	return true;
+}
+bool ofxEditor::saveFile(string filename, int whichBuffer) {
+  
+  if (whichBuffer < 0 || whichBuffer > maxBuffer) return false;
+  
+	string path = ofToDataPath(filename);
+  
+	ofFile file;
+	if(!file.open(path, ofFile::WriteOnly)){
+		return false;
+	}
+	
+	file << buf[whichBuffer]->getText();
+	file.close();
+  
+	return true;
+}
+
+
+
 
 
 
