@@ -17,7 +17,7 @@ highlightColor(ofColor::white, 200)
   //cout << "Configure editor with " << noBuffers << " buffers" << endl;
   // Load font from "data/" folder
   font.loadFont("DroidSansMono.ttf", 20, true, false, true);
-  
+
   // Reserve text buffers
   buf.reserve(noBuffers);
   for (int i = 0; i < noBuffers; ++i) {
@@ -28,7 +28,7 @@ highlightColor(ofColor::white, 200)
   }
   currentBuffer = 0;
   maxBuffer = noBuffers - 1;
-  
+
   // Create a frame buffer to render to
   ofFbo::Settings settings;
   settings.width = ofGetWidth();
@@ -40,19 +40,21 @@ highlightColor(ofColor::white, 200)
 
   // Add listener for key events
   ofAddListener(ofEvents().keyPressed,this,&ofxEditor::handleKeyPress);
-  
+  // Add listener for window size event
+  ofAddListener(ofEvents().windowResized,this,&ofxEditor::windowResized);
+
   update();
 }
 
 
 void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
-  
+
   int key = _key.key;
   bool alt   = (bool) (ofGetKeyPressed(OF_KEY_ALT));
   bool shift = (bool) (ofGetKeyPressed(OF_KEY_SHIFT));
   bool cmd   = (bool) (ofGetKeyPressed(OF_KEY_COMMAND));
   bool ctrl  = (bool) (ofGetKeyPressed(OF_KEY_CONTROL));
-  
+
   // GLFW bug see issue: https://github.com/openframeworks/openFrameworks/issues/2562
   // Allow shift on non-alpha characters
   if (shift) {
@@ -99,8 +101,8 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
     // / ? 47 63
     else if (key == 47) key = 63;
   }
-  
-  
+
+
   // Add printable ASCII characters to buffer text
   if (!cmd && key < 127 && key > 31) {
     buf[currentBuffer]->insert(key);
@@ -117,7 +119,7 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
   if (cmd && key == 'n') {
     buf[currentBuffer]->clear();
   }
-  
+
   // Move cursor around with arrow keys
   // up 357
   if (key == 357) {
@@ -135,7 +137,7 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
   if (key == 358) {
     buf[currentBuffer]->moveCursorCol(1, shift, cmd);
   }
-  
+
   if (cmd && key == 'x') {
     ClipBoard::setText(buf[currentBuffer]->getSelection());
     buf[currentBuffer]->removeSelection();
@@ -146,9 +148,9 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
   if (cmd && key == 'v') {
     buf[currentBuffer]->insert(ClipBoard::getText());
   }
-  
+
   // ESC key (27) handled elsewhere
-  
+
   // Tab through buffers
   if (key == 9) {
     if (shift || cmd) {
@@ -166,16 +168,16 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
       currentBuffer = newBuffer;
     }
   }
-  
+
   if (cmd) {
     if (cmds.count(key) > 0) {
       pair<void *, EditorCommand> callback = cmds[key];
       (*callback.second)(callback.first);
     }
   }
-  
+
   //cout << "Key pressed " << key << endl;
-   
+
   // Key has been pressed so update the editor fbo
   update();
 }
@@ -206,7 +208,7 @@ int ofxEditor::maxCol() {
 void ofxEditor::draw() {
   ofSetColor(255, 255, 255, 255);
   editorFbo.draw(0, 0);
-  
+
   /*
   if (ofGetFrameNum() % 50 > 30) {
     ofPushMatrix();
@@ -229,10 +231,10 @@ void ofxEditor::update() {
 }
 
 
-void ofxEditor::resize(int w, int h) {
+void ofxEditor::windowResized(ofResizeEventArgs & resize) {
   ofFbo::Settings settings;
-  settings.width = w;
-  settings.height = h;
+  settings.width = resize.width;
+  settings.height = resize.height;
   editorFbo.allocate(settings);
   editorFbo.begin();
   ofClear(0,0,0,0);

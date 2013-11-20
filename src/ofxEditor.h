@@ -19,28 +19,28 @@ class ofxEditor {
 
   ofFbo editorFbo;
   ofTrueTypeFont font;
-  
+
   ofColor textColor;
   ofColor textBorderColor;
   ofColor cursorColor;
   ofColor highlightColor;
-  
+
   map<int, pair<void *, EditorCommand> > cmds;
-  
+
 public:
   ofxEditor(int noBuffers = 1);
-  
+
   void addCommand(int key, void *_o, EditorCommand _c) {
     cmds[key] = make_pair(_o, _c);
   }
-  
+
   void handleKeyPress(ofKeyEventArgs &);
-  
+
   void draw();
   void update();
-  
-  void resize(int w, int h);
-  
+
+  void windowResized(ofResizeEventArgs &);
+
   vector<EditorBuffer*> buf;
   int currentBuffer;
   int maxBuffer;
