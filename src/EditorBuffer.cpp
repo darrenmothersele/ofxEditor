@@ -183,6 +183,7 @@ void EditorBuffer::setHighlightColor(ofColor _c) {
 
 void EditorBuffer::draw(float x, float y, float w, float h) {
   ofPushMatrix();
+  ofPushStyle();
   ofTranslate(x, y);
 
   updateShapes();
@@ -209,9 +210,11 @@ void EditorBuffer::draw(float x, float y, float w, float h) {
   }
   */
 
+  ofSetColor(textColor);
   for (vector<ofTTFCharacter>::iterator i = shapes.begin(); i < shapes.end(); ++i) {
     (*i).draw();
   }
+  ofPopStyle();
   ofPopMatrix();
 }
 

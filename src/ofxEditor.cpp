@@ -206,26 +206,18 @@ int ofxEditor::maxCol() {
 
 
 void ofxEditor::draw() {
+  ofPushStyle();
+  ofDisableLighting();
   ofSetColor(255, 255, 255, 255);
   editorFbo.draw(0, 0);
-
-  /*
-  if (ofGetFrameNum() % 50 > 30) {
-    ofPushMatrix();
-    ofTranslate(0, editorFbo.getHeight() / 2.0);
-    ofScale(editorLocation.width, editorLocation.width);
-    ofTranslate(editorLocation.x, editorLocation.y);
-    ofSetColor(cursorColor);
-    ofRect(cursorLocation.x, cursorLocation.y, 8, -font.getLineHeight());
-    ofPopMatrix();
-  }
-  */
+  ofPopStyle();
 }
 
 
 void ofxEditor::update() {
   editorFbo.begin();
   ofClear(0,0,0,0);
+  ofSetColor(255, 255, 255, 255);
   buf[currentBuffer]->draw(20, 20, ofGetWidth() - 40, ofGetHeight() - 40);
   editorFbo.end();
 }
