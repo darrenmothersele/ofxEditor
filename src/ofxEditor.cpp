@@ -8,7 +8,7 @@
 
 #include "ofxEditor.h"
 
-ofxEditor::ofxEditor(int noBuffers) :
+ofxEditor::ofxEditor(int noBuffers, string fontname) :
 textColor(ofColor::white, 200),
 textBorderColor(ofColor::white, 200),
 cursorColor(ofColor::white, 200),
@@ -16,7 +16,7 @@ highlightColor(ofColor::white, 200)
 {
   //cout << "Configure editor with " << noBuffers << " buffers" << endl;
   // Load font from "data/" folder
-  font.loadFont("DroidSansMono.ttf", 20, true, false, true);
+  font.loadFont(fontname, 20, true, false, true);
 
   // Reserve text buffers
   buf.reserve(noBuffers);

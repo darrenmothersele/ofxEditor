@@ -24,6 +24,10 @@ maxScale(0.9)
   selectEnd = cursorPosition;
 }
 
+string EditorBuffer::getText() {
+  return text;
+}
+
 void EditorBuffer::insert(int key) {
   if (selectStart != selectEnd) {
     cursorPosition = text.erase(selectStart, selectEnd);
@@ -180,9 +184,9 @@ void EditorBuffer::setHighlightColor(ofColor _c) {
 void EditorBuffer::draw(float x, float y, float w, float h) {
   ofPushMatrix();
   ofTranslate(x, y);
-  
+
   updateShapes();
-  
+
   // Scale down if needed
   float scale = 1;
   if (bounds.width > 0 && bounds.height > 0) {
@@ -192,7 +196,7 @@ void EditorBuffer::draw(float x, float y, float w, float h) {
     ofScale(scale, scale);
     //cout << scale << endl;
   }
-  
+
   // TODO: Move around a bit if cursor is off screen
   // This doesn't work if you apply a limit to scale
   /*
@@ -204,7 +208,7 @@ void EditorBuffer::draw(float x, float y, float w, float h) {
     ofTranslate((w - cursorPoint.x), 0);
   }
   */
-  
+
   for (vector<ofTTFCharacter>::iterator i = shapes.begin(); i < shapes.end(); ++i) {
     (*i).draw();
   }
@@ -221,7 +225,7 @@ void EditorBuffer::updateShapes() {
   selection.setColor(highlightColor);
   ofPath cursor;
   cursor.setColor(cursorColor);
-  
+
   for (string::iterator i = text.begin(); i < text.end(); ++i) {
     if (i == cursorPosition) {
       cursorPoint = ofPoint(location.x, location.y);
@@ -270,7 +274,7 @@ void EditorBuffer::updateShapes() {
   }
   shapes.push_back(cursor);
   shapes.push_back(selection);
-  
+
   bounds = ofRectangle(0,0,0,0);
   for (vector<ofTTFCharacter>::iterator i = shapes.begin(); i < shapes.end(); ++i) {
     //(*i).draw();

@@ -28,7 +28,7 @@ class ofxEditor {
   map<int, pair<void *, EditorCommand> > cmds;
 
 public:
-  ofxEditor(int noBuffers = 1);
+  ofxEditor(int noBuffers = 1, string fontname = "DroidSansMono.ttf");
 
   void addCommand(int key, void *_o, EditorCommand _c) {
     cmds[key] = make_pair(_o, _c);
