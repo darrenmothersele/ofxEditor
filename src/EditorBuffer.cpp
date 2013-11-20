@@ -15,7 +15,7 @@ selectStart(text.end()),
 selectEnd(text.end()),
 font(_f),
 minScale(0.5),
-maxScale(0.9)
+maxScale(2.5)
 {
   lineHeight = font->getLineHeight();
   charWidth = font->stringWidth("X") + font->getLetterSpacing();
@@ -195,7 +195,7 @@ void EditorBuffer::draw(float x, float y, float w, float h) {
   float scale = 1;
   if (bounds.width > 0 && bounds.height > 0) {
     scale = min(w / bounds.width, h / bounds.height);
-    //scale = min(scale, maxScale);
+    scale = min(scale, maxScale);
     //scale = max(scale, minScale);
     ofScale(scale, scale);
     //cout << scale << endl;
