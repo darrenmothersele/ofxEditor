@@ -182,28 +182,6 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
   update();
 }
 
-/*
-
-int ofxEditor::maxRow() {
-  int r = 0;
-  for (string::iterator i = text[currentBuffer].begin(); i != text[currentBuffer].end(); i++) {
-    if (*i == '\n') r++;
-  }
-  return r;
-}
-int ofxEditor::maxCol() {
-  int c = 0;
-  int current = 0;
-  for (string::iterator i = text[currentBuffer].begin(); i != text[currentBuffer].end(); i++) {
-    current++;
-    if (current > c) c = current;
-    if (*i == '\n') current = 0;
-  }
-  return c;
-}
-*/
-
-
 
 void ofxEditor::draw() {
   ofPushStyle();
