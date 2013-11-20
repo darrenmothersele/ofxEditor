@@ -33,6 +33,17 @@ You can define custom commands in your setup function, for example:
       ((testApp *)_o)->editorVisible = !((testApp *)_o)->editorVisible;
     }
 
+To get the current text in the editor you need to reference the `getText()`
+method of the current buffer.
+
+    editor.buf[editor.currentBuffer]->getText();
+
+For the editor to be visible you need to draw it in your main oF app draw loop:
+
+    if (editorVisible) {
+      editor.draw();
+    }
+
 
 ## Limitations
 
