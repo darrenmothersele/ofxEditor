@@ -29,6 +29,9 @@ string EditorBuffer::getText() {
 }
 void EditorBuffer::setText(string t) {
   text = t;
+  cursorPosition = text.end();
+  selectStart = cursorPosition;
+  selectEnd = cursorPosition;
 }
 
 void EditorBuffer::insert(int key) {
