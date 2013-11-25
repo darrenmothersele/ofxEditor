@@ -187,39 +187,131 @@ void EditorBuffer::setHighlightColor(ofColor _c) {
   highlightColor = _c;
 }
 
+
+void EditorBuffer::updateBounds() {
+  bounds = ofRectangle(0, 0, 0, lineHeight);
+  string ss;
+  bool foundCursor = false;
+  
+  // keep track of selection areas
+  shapes.clear();
+  ofPath selection;
+  ofPoint select;
+  bool inHighlight = false;
+  
+  for (string::iterator i = text.begin(); i < text.end(); ++i) {
+    if (i == cursorPosition) {
+      cursorPoint = ofPoint(font->stringWidth(ss), bounds.height);
+      foundCursor = true;
+    }
+    if (i == selectStart) {
+      select = ofPoint(font->stringWidth(ss), bounds.height);
+      select.y -= lineHeight;
+      inHighlight = true;
+    }
+    if (i == selectEnd) {
+      selection.rectangle(select.x, select.y, font->stringWidth(ss) - select.x, bounds.height - select.y);
+      inHighlight = false;
+    }
+    if (*i == '\n') {
+      if (inHighlight) {
+        selection.rectangle(select.x, select.y, font->stringWidth(ss) - select.x, bounds.height - select.y);
+      }
+      bounds.growToInclude(font->stringWidth(ss), bounds.height);
+      bounds.height += lineHeight;
+      ss.clear();
+      if (inHighlight) {
+        select = ofPoint(font->stringWidth(ss), bounds.height);
+        select.y -= lineHeight;
+      }
+    }
+    else if (*i == ' ') {
+      ss.push_back('_');
+    }
+    else {
+      ss.push_back(*i);
+    }
+  }
+  if (inHighlight) {
+    selection.rectangle(select.x, select.y, font->stringWidth(ss) - select.x, bounds.height - lineHeight - select.y);
+  }
+  if (!foundCursor) {
+    cursorPoint = ofPoint(font->stringWidth(ss), bounds.height);
+  }
+  bounds.growToInclude(font->stringWidth(ss), bounds.height);
+  
+  selection.setColor(highlightColor);
+  shapes.push_back(selection);
+}
+
+
+void EditorBuffer::drawStrings() {
+  float h = lineHeight;
+  string ss;
+  for (string::iterator i = text.begin(); i < text.end(); ++i) {
+    if (*i == '\n') {
+      font->drawString(ss, 0, h);
+      h += lineHeight;
+      ss.clear();
+    }
+    else {
+      ss.push_back(*i);
+    }
+  }
+  font->drawString(ss, 0, h);
+}
+
+void EditorBuffer::drawCursor() {
+  
+  ofPushMatrix();
+  ofPushStyle();
+  //ofTranslate(x, y);
+  
+  ofPopStyle();
+  ofPopMatrix();
+}
+
 void EditorBuffer::draw(float x, float y, float w, float h) {
   ofPushMatrix();
   ofPushStyle();
   ofTranslate(x, y);
-
-  updateShapes();
-
+  
+  // Need to calculate size of editor before drawing
+  updateBounds();
+  
   // Scale down if needed
   float scale = 1;
   if (bounds.width > 0 && bounds.height > 0) {
     scale = min(w / bounds.width, h / bounds.height);
     scale = min(scale, maxScale);
-    //scale = max(scale, minScale);
+    scale = max(scale, minScale);
     ofScale(scale, scale);
-    //cout << scale << endl;
   }
-
-  // TODO: Move around a bit if cursor is off screen
-  // This doesn't work if you apply a limit to scale
-  /*
-  if (cursorPoint.y > h) {
-    ofTranslate(0, ((h) - (cursorPoint.y)));
-    //cout << h << ":" << cursorPoint.y << " : " << (h - cursorPoint.y) << endl;
+  
+  // Move editor content if cursor is off screen
+  float offsetY = (h / scale) - cursorPoint.y;
+  if (offsetY < 0) {
+    ofTranslate(0, offsetY);
   }
-  if (cursorPoint.x > w) {
-    ofTranslate((w - cursorPoint.x), 0);
+  float offsetX = (w / scale) - cursorPoint.x;
+  if (offsetX < 0) {
+    ofTranslate(offsetX, 0);
   }
-  */
-
-  ofSetColor(textColor);
+  
+  // Draw selected text highlight
   for (vector<ofTTFCharacter>::iterator i = shapes.begin(); i < shapes.end(); ++i) {
     (*i).draw();
   }
+
+  // Draw text buffer content
+  ofSetColor(textColor);
+  drawStrings();
+  
+
+  // Draw cursor
+  ofSetColor(cursorColor);
+  ofRect(cursorPoint, 10, -lineHeight);
+
   ofPopStyle();
   ofPopMatrix();
 }
@@ -234,6 +326,7 @@ void EditorBuffer::updateShapes() {
   selection.setColor(highlightColor);
   ofPath cursor;
   cursor.setColor(cursorColor);
+  string ss;
 
   for (string::iterator i = text.begin(); i < text.end(); ++i) {
     if (i == cursorPosition) {
@@ -251,6 +344,8 @@ void EditorBuffer::updateShapes() {
       inHighlight = false;
     }
     if (*i == '\n') {
+      font->drawString(ss, 0, location.y);
+      ss.clear();
       if (inHighlight) {
         selection.rectangle(select.x, select.y, location.x - select.x, location.y - select.y);
       }
@@ -262,15 +357,20 @@ void EditorBuffer::updateShapes() {
       }
     }
     else if (*i == ' ') {
+      ss.push_back(' ');
       location.x += charWidth;
     }
     else {
+      /*
       ofTTFCharacter c = font->getCharacterAsPoints(*i);
       c.setStrokeColor(textBorderColor);
       c.setStrokeWidth(1);
       ofSetColor(textColor);
       shapes.push_back(c);
       shapes.back().translate(location);
+      */
+      //font->drawString(*i, location.x, location.y);
+      ss.push_back(*i);
       location.x += charWidth;
     }
   }
@@ -279,8 +379,10 @@ void EditorBuffer::updateShapes() {
   }
   if (!foundCursor) {
     cursorPoint = ofPoint(location.x, location.y);
-    cursor.rectangle(location.x, location.y, 10, -lineHeight);
+    //cursor.rectangle(location.x, location.y, 10, -lineHeight);
+    cursor.rectangle(font->stringWidth(ss), location.y, 10, -lineHeight);
   }
+  font->drawString(ss, 0, location.y);
   shapes.push_back(cursor);
   shapes.push_back(selection);
 

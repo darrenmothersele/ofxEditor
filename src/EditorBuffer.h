@@ -32,7 +32,7 @@ class EditorBuffer {
   ofRectangle bounds;
   ofPoint cursorPoint;
   float minScale, maxScale;
-
+  
 public:
   EditorBuffer(ofTrueTypeFont * f);
 
@@ -61,7 +61,10 @@ public:
   void draw(float, float, float, float);
   ofRectangle getBoundingBox();
   void updateShapes();
-
+  void updateBounds();
+  void drawStrings();
+  void drawCursor();
+  
 };
 
 #endif /* defined(__textEditor__EditorBuffer__) */

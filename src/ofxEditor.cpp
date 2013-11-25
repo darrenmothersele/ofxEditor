@@ -16,7 +16,9 @@ highlightColor(ofColor::white, 200)
 {
   //cout << "Configure editor with " << noBuffers << " buffers" << endl;
   // Load font from "data/" folder
-  font.loadFont(fontname, 20, true, false, true);
+  //font.loadFont(fontname, 20, true, false, true, 0.00001);
+  //font.loadFont(fontname, 5, true, false, true);
+  font.loadFont(fontname, 20);
 
   // Reserve text buffers
   buf.reserve(noBuffers);
@@ -195,8 +197,12 @@ void ofxEditor::draw() {
 void ofxEditor::update() {
   editorFbo.begin();
   ofClear(0,0,0,0);
+  
+  //ofSetColor(255, 0, 0, 200);
+  //ofRect(40,20,ofGetWidth() - 100, ofGetHeight() - 50);
   ofSetColor(255, 255, 255, 255);
-  buf[currentBuffer]->draw(20, 20, ofGetWidth() - 40, ofGetHeight() - 40);
+  buf[currentBuffer]->draw(40, 20, ofGetWidth() - 100, ofGetHeight() - 50);
+  
   editorFbo.end();
 }
 
