@@ -28,7 +28,7 @@ highlightColor(ofColor::white, 200)
     buf[i]->setCursorColor(cursorColor);
     buf[i]->setHighlightColor(highlightColor);
   }
-  currentBuffer = 0;
+  currentBuffer = 1;
   maxBuffer = noBuffers - 1;
 
   // Create a frame buffer to render to
@@ -165,9 +165,15 @@ void ofxEditor::handleKeyPress(ofKeyEventArgs & _key) {
   }
   // Switch buffer using ALT+number
   if (cmd && key >= 49 && key <= 57) {
-    int newBuffer = key - 49;
+    int newBuffer = key - 48;
     if (newBuffer <= maxBuffer) {
       currentBuffer = newBuffer;
+    }
+  }
+  // Extra buffer switch for 0
+  if (cmd && key == 48) {
+    if (9 <= maxBuffer) {
+      currentBuffer = 0;
     }
   }
 
