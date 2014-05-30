@@ -201,15 +201,18 @@ void ofxEditor::draw() {
 
 
 void ofxEditor::update() {
+  ofPushStyle();
   editorFbo.begin();
   ofClear(0,0,0,0);
   
   //ofSetColor(255, 0, 0, 200);
   //ofRect(40,20,ofGetWidth() - 100, ofGetHeight() - 50);
   ofSetColor(255, 255, 255, 255);
+  ofFill();
   buf[currentBuffer]->draw(40, 20, ofGetWidth() - 100, ofGetHeight() - 50);
   
   editorFbo.end();
+  ofPopStyle();
 }
 
 
