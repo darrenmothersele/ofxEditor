@@ -18,7 +18,7 @@
 * See https://github.com/Akira-Hayasaka/ofxGLEditor for more info.
 */
 
-#include "Clipboard.h"
+#include "ClipBoard.h"
 
 string ClipBoard::getText() {
   
